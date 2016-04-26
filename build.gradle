@@ -16,8 +16,6 @@ apply plugin: 'java'
 
 apply plugin: 'war'
 
-apply plugin: 'cloudfoundry'
-
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'propdeps'
 apply plugin: "propdeps-idea"
@@ -112,12 +110,6 @@ dependencies {
     // Spring Testing
     testCompile "org.springframework:spring-test"
 
-    // Tomcat
-    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}"
-    tomcat "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}"
-    tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
-        exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
-    }
 }
 
 task wrapper(type: Wrapper) {
@@ -129,23 +121,4 @@ war {
     version = ""
 }
 
-tomcatRun {
-    outputFile = file('tomcat.log')
-}
 
-cloudfoundry {
-    target = "https://api.run.pivotal.io"
-    space = "development"
-
-    file = file("${war.archivePath}")
-    uri = "spring-music-${randomWord}.cfapps.io"
-    memory = 512
-    instances = 1
-
-    services {
-        "music-mongodb" {
-            label = "mongolab"
-            plan = "sandbox"
-        }
-    }
-}
